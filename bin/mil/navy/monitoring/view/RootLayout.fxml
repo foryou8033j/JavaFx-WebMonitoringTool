@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mil.navy.monitoring.view.RootLayoutController">
+   <bottom>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="Options">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#handleSettingButton" text="Settings..." />
+                  <MenuItem mnemonicParsing="false" onAction="#handleRefreshAllButton" text="Reload All" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleExitButton" text="Exit" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Files">
+              <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleNew" text="New" />
+                <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Save" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="Save as..." />
+                  <MenuItem mnemonicParsing="false" onAction="#handleOpen" text="Load..." />
+              </items>
+            </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Show Statstics..." />
+                  <MenuItem mnemonicParsing="false" onAction="#handleAboutButton" text="about..." />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </bottom>
+   <center>
+      <FlowPane fx:id="overView" alignment="CENTER" columnHalignment="CENTER" focusTraversable="true" hgap="10.0" prefHeight="400.0" prefWidth="600.0" vgap="10.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

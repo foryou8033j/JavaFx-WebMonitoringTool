@@ -20,19 +20,17 @@ import mil.navy.monitoring.model.Site;
  */
 public class RootLayoutController {
 
-	
-	//MainApp °úÀÇ ¿¬µ¿ µ¥ÀÌÅÍ
 	private MainApp mainApp;
 	
 	@FXML
 	private FlowPane overView;
 	
 	public RootLayoutController() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	/**
-     * ºñ¾î ÀÖ´Â ÁÖ¼Ò·ÏÀ» ¸¸µç´Ù.
+     * ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ö¼Ò·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
      */
     @FXML
     private void handleNew() {
@@ -42,18 +40,16 @@ public class RootLayoutController {
     }
 	
     /**
-     * FileChooser¸¦ ¿­¾î¼­ »ç¿ëÀÚ°¡ °¡Á®¿Ã ÁÖ¼Ò·ÏÀ» ¼±ÅÃÇÏ°Ô ÇÑ´Ù.
+     * FileChooserï¿½ï¿½ ï¿½ï¿½ï¿½î¼­ ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ñ´ï¿½.
      */
     @FXML
     private void handleOpen() {
         FileChooser fileChooser = new FileChooser();
 
-        // È®ÀåÀÚ ÇÊÅÍ¸¦ ¼³Á¤ÇÑ´Ù.
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
                 "XML files (*.xml)", "*.xml");
         fileChooser.getExtensionFilters().add(extFilter);
 
-        // Save File Dialog¸¦ º¸¿©ÁØ´Ù.
         File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
 
         if (file != null) {
@@ -62,11 +58,7 @@ public class RootLayoutController {
         }
     }
     
-    /**
-     * ÇöÀç ¿­·Á ÀÖ´Â ÆÄÀÏ¿¡ ÀúÀåÇÑ´Ù.
-     * ¸¸ÀÏ ¿­·Á ÀÖ´Â ÆÄÀÏÀÌ ¾øÀ¸¸é "save as" ´ÙÀÌ¾ó·Î±×¸¦ º¸¿©ÁØ´Ù.
-     *
-     */
+
     @FXML
     private void handleSave() {
         File personFile = mainApp.getSiteFilePath();
@@ -77,23 +69,18 @@ public class RootLayoutController {
         }
     }
 
-    /**
-     * FileChooser¸¦ ¿­¾î¼­ »ç¿ëÀÚ°¡ ÀúÀåÇÒ ÆÄÀÏÀ» ¼±ÅÃÇÏ°Ô ÇÑ´Ù.
-     */
+ 
     @FXML
     private void handleSaveAs() {
         FileChooser fileChooser = new FileChooser();
 
-        // È®ÀåÀÚ ÇÊÅÍ¸¦ ¼³Á¤ÇÑ´Ù.
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
                 "XML files (*.xml)", "*.xml");
         fileChooser.getExtensionFilters().add(extFilter);
 
-        // Save File Dialog¸¦ º¸¿©ÁØ´Ù.
         File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
 
         if (file != null) {
-            // Á¤È®ÇÑ È®ÀåÀÚ¸¦ °¡Á®¾ß ÇÑ´Ù.
             if (!file.getPath().endsWith(".xml")) {
                 file = new File(file.getPath() + ".xml");
             }
@@ -101,18 +88,14 @@ public class RootLayoutController {
         }
     }
 	
-    /**
-     * SettingÃ¢À» »õ·Î ¿¬´Ù.
-     */
+
 	@FXML
 	private void handleSettingButton()
 	{
 		mainApp.showSettingDialog();
 	}
 	
-	/**
-	 * ¸ğµç ºê¶ó¿ìÀú »õ·Î°íÄ§ ¸í·ÉÀ» ¼öÇàÇÑ´Ù.
-	 */
+
 	@FXML
 	private void handleRefreshAllButton()
 	{
@@ -122,32 +105,26 @@ public class RootLayoutController {
 		}
 	}
 	
-	/**
-	 * About ´ÙÀÌ¾ó·Î±×¸¦ º¸¿©ÁØ´Ù.
-	 */
+
 	@FXML
 	private void handleAboutButton()
 	{
 		Alert alert = new Alert(AlertType.INFORMATION);
 		
 		alert.setTitle("about");
-		alert.setHeaderText("Á¤º¸º¸È£ ÅëÇÕ ¸ğ´ÏÅÍ¸µ µµ±¸ v1.0");
-		alert.setContentText("°³¹ß : ÇØ»óº´ 626±â »óº´ ¼­Á¤»ï");
+		alert.setHeaderText("ì •ë³´ë³´í˜¸ì²´ê³„ í†µí•© ëª¨ë‹ˆí„°ë§ ë„êµ¬ v1.0");
+		alert.setContentText("í•´ìƒë³‘ 626ê¸° ìƒë³‘ ì„œì •ì‚¼");
 		
 		alert.showAndWait();
 	}
 	
-	/**
-	 * MainApp¿¡¼­ Overview¿¡ ºê¶ó¿ìÀú Ãß°¡ ÀÛ¾÷À» Áö½ÃÇÑ´Ù.
-	 */
+
 	private void showSiteDataToOverview()
 	{
 		mainApp.addBrowserToOverview();
 	}
 	
-	/**
-	 * ¾ÖÇÃ¸®ÄÉÀÌ¼Ç Á¾·á.
-	 */
+
 	@FXML
 	private void handleExitButton()
 	{

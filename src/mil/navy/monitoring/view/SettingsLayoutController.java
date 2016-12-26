@@ -78,20 +78,17 @@ public class SettingsLayoutController {
 	@FXML
 	private Button downButton;
 	
-	//µ•¿Ã≈Õ
 	private MainApp mainApp;
 	
 	private Site curClickedSite = null;
+
+	public boolean isChanged = false;
 	
-	//initialize ∫∏¥Ÿ ∏’¿˙ Ω√«‡
 	public SettingsLayoutController() {
 		
 
 	}
-	
-	/**
-	 * ≥ÎµÂ∏¶ «—ƒ≠ ¿ß∑Œ ø√∏Æ¥¬ «⁄µÈ
-	 */
+
 	@FXML
 	private void handleUpChange()
 	{
@@ -107,11 +104,11 @@ public class SettingsLayoutController {
 			mainApp.getSiteData().set(select-1,tmpSite);
 			siteTable.getSelectionModel().select(select-1);
 		}
+		
+		isChanged = true;
 	}
 	
-	/**
-	 * ≥ÎµÂ∏¶ «—ƒ≠ æ∆∑°∑Œ ≥ª∏Æ¥¬ «⁄µÈ
-	 */
+
 	@FXML
 	private void handleDownChange()
 	{
@@ -127,11 +124,11 @@ public class SettingsLayoutController {
 			mainApp.getSiteData().set(select+1,tmpSite);
 			siteTable.getSelectionModel().select(select+1);
 		}
+		
+		isChanged = true;
 	}
     
-	/**
-	 * ªı∑Œ∞Ìƒß µø¿€ ¿Øπ´ πˆ∆∞
-	 */
+
 	@FXML
 	private void handleRefreshingButton()
 	{
@@ -141,13 +138,13 @@ public class SettingsLayoutController {
 			mainApp.setRefresh(false);
 		
 		Regedit.addRegistry("isRefresh", String.valueOf(mainApp.isRefresh()));
+		
+		isChanged = true;
 	}
 	
 	
 	
-	/**
-	 * »≠∏È »∏¿¸ µø¿€ ¿Øπ´ πˆ∆∞
-	 */
+
 	@FXML
 	private void handleRotateButton()
 	{
@@ -157,27 +154,27 @@ public class SettingsLayoutController {
 			mainApp.setRotate(false);
 		
 		Regedit.addRegistry("isRotate", String.valueOf(mainApp.isRotate()));
+		
+		isChanged = true;
 	}
 	
-	/**
-	 * ªÁ¿Ã∆Æ √ﬂ∞°
-	 */
+
 	@FXML
 	private void handleAddButton()
 	{
 		try
 		{
 			//saveButton.setTextFill(Color.RED);
-			mainApp.getSiteData().add(new Site("about:blank", "about:blank", false));
+			mainApp.getSiteData().add(new Site("about:blank", "about:blank", true));
 		}catch (Exception e)
 		{
 			e.printStackTrace();
 		}
+		
+		isChanged = true;
 	}
 	
-	/**
-	 * ºˆ¡§ ≥ªøÎ ¿˙¿Â
-	 */
+
 	@FXML
 	private void handleSaveButton()
 	{
@@ -198,21 +195,20 @@ public class SettingsLayoutController {
 			
 		}
 		
+		isChanged = true;
+		
 	}
-	
-	/**
-	 * ºˆ¡§ ≥ªøÎ ¿˚øÎ
-	 */
+
 	@FXML
 	private void handleActionButton()
 	{
 		mainApp.addBrowserToOverview();
 		actionButton.setTextFill(Color.BLACK);
+		
+		isChanged = true;
 	}
 	
-	/**
-	 * «ˆ¿Á º±≈√µ» ªÁ¿Ã∆Æ ªË¡¶
-	 */
+
 	@FXML
 	private void handleRemoveButton()
 	{
@@ -228,23 +224,22 @@ public class SettingsLayoutController {
 		{
 			e.printStackTrace();
 		}
+		
+		isChanged = true;
 	}
 	
-	/**
-	 * »≠∏È »∏¿¸ Ω√∞£¿ª ¿˚øÎ«—¥Ÿ.
-	 * @param time
-	 */
+
 	private void changeRotateTimeValue(int time)
 	{
 		
 		mainApp.setRotateTime(time);
 		
 		Regedit.addRegistry("rotateTime", String.valueOf(mainApp.getRotateTime()));
+		
+		isChanged = true;
 	}
 	
-	/**
-	 * »≠ªÏ«• πÊ«‚¿ª º±≈√ ¿Œµ¶Ω∫ø° µ˚∂Û ∫Ò»∞º∫»≠ «—¥Ÿ.
-	 */
+
 	private void moveButtonChanger(int index)
 	{
 		
@@ -260,14 +255,10 @@ public class SettingsLayoutController {
 		
 	}
 	
-	/**
-	 * ∏ÆΩ∫∆Æ ≈¨∏Ø¿ª π›øµ«ÿº≠ øÏ√¯ ∆–≥Œø° ¡§∫∏∏¶ √‚∑¬«—¥Ÿ.
-	 * ºˆ¡§¿Ã ∫“∞°¥…«—∞ÊøÏ¿« ªÛ»≤¿ª π›øµ«—¥Ÿ.
-	 * @param site
-	 */
+
 	private void showSiteDetailData(Site site)
 	{
-		//«ˆ¿Á ∫∏∞Ì¿÷¥¬ ∏ÆΩ∫∆Æ ¡§∫∏ ¿˙¿Â
+
 		curClickedSite = site;
 		
 		if(curClickedSite == null)
@@ -308,23 +299,18 @@ public class SettingsLayoutController {
 			zoomLabel.setDisable(true);
 			refreshLabel.setDisable(true);
 			
-			name.setText("ªÁ¿Ã∆Æ ¿Ã∏ß¿ª ¿‘∑¬«œººø‰.");
-			address.setText("ªÁ¿Ã∆Æ ¡÷º“∏¶ ¿‘∑¬«œººø‰.");
+			name.setText("ÏÇ¨Ïù¥Ìä∏ Ïù¥Î¶Ñ ÏûÖÎ†•");
+			address.setText("ÏÇ¨Ïù¥Ìä∏ Ï£ºÏÜå ÏûÖÎ†•");
 			zoom.setValue(0);
 			refreshTime.setValue(0);
 			zoomLabel.setText("-");
-			refreshLabel.setText("- √ ");
+			refreshLabel.setText("- Ï¥à");
 			
 			removeButton.setDisable(true);
 		}
 	}
 	
 
-	/**
-	 * Ω√∞£∞™ø° µ˚∂Û ∂Û∫ß ≥ªøÎ¿Ã ∫Ø∞Êµ«µµ∑œ «œ¥¬ ∏ﬁº“µÂ.
-	 * @param label ∫Ø∞Ê¥ÎªÛ ∂Û∫ß
-	 * @param newValue ∞™
-	 */
 	private void changeLabelByTime(Label label, int newValue)
 	{
 		int minute;
@@ -335,20 +321,17 @@ public class SettingsLayoutController {
 			minute = newValue / 60;
 			second = newValue % 60;
 			if(second == 0)
-				label.setText(String.valueOf(minute) + "∫–");
+				label.setText(String.valueOf(minute) + "Ï¥à");
 			else
-				label.setText(String.valueOf(minute) + "∫– " + String.valueOf(second) + "√ ");
+				label.setText(String.valueOf(minute) + "Î∂Ñ " + String.valueOf(second) + "Ï¥à");
 		}
 		else
 		{
-			label.setText(String.valueOf(newValue) + "√ ");
+			label.setText(String.valueOf(newValue) + "Ï¥à");
 		}
 	}
 	
-	/**
-	 * ¥ÎªÛ ≈‰±€ πˆ∆∞¿« æ◊º« ªÛ≈¬ø° µ˚∂Û ∆˘∆Æ ªˆªÛ¿ª ∫Ø∞Ê«—¥Ÿ.
-	 * @param button πˆ∆∞
-	 */
+
 	private void changeToggleButtonColorBySelect(ToggleButton button)
 	{
 		if(button.isSelected())
@@ -360,14 +343,12 @@ public class SettingsLayoutController {
 	@FXML
 	private void initialize()
 	{
-		// ø¨∂Ù√≥ ≈◊¿Ã∫Ì¿« µŒ ø≠¿ª √ ±‚»≠«—¥Ÿ.
+
 		columnName.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
 		columnAddress.setCellValueFactory(cellData -> cellData.getValue().getAddressProperty());
-		
-		//ªÁ¿Ã∆Æ ¡§∫∏ ¡ˆøÏ±‚
+
 		showSiteDetailData(null);
-		
-		//º±≈√ ∞®¡ˆ »ƒ ±◊ ∂ß ∏∂¥Ÿ ªı∑ŒøÓ µ•¿Ã≈Õ∏¶ « µÂø° «•Ω√«—¥Ÿ.
+
 		siteTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showSiteDetailData(newValue));
 		
 		zoom.valueProperty().addListener((observable, oldValue, newValue) -> zoomLabel.setText(String.valueOf(newValue.doubleValue())));
@@ -375,7 +356,7 @@ public class SettingsLayoutController {
 		refreshTime.valueProperty().addListener((observable, oldValue, newValue) -> changeLabelByTime(refreshLabel, newValue.intValue()));
 		
 		rotate.valueProperty().addListener((observable, oldValue, newValue) -> changeLabelByTime(rotateLabel, newValue.intValue()));
-		rotate.valueProperty().addListener((observable, oldValue, newValue) -> changeRotateTimeValue(newValue.intValue() ));	//»≠∏È»∏¿¸ ∞™¿∫ ∫Ø∞Ê∞˙ µøΩ√ø° ¿˚øÎ«—¥Ÿ.
+		rotate.valueProperty().addListener((observable, oldValue, newValue) -> changeRotateTimeValue(newValue.intValue() ));	
 
 		refreshingButton.selectedProperty().addListener((observable, oldValue, newValue) -> changeToggleButtonColorBySelect(refreshingButton));
 		rotateButton.selectedProperty().addListener((observable, oldValue, newValue) -> changeToggleButtonColorBySelect(rotateButton));
@@ -384,32 +365,25 @@ public class SettingsLayoutController {
 		
 	}
 	
-	/**
-	 * mainApp∞˙ ±‚∫ª µ•¿Ã≈Õ ø¨µø
-	 * @param mainApp
-	 */
+
 	public void setMainApp(MainApp mainApp)
 	{
-		//MainApp∞˙ ø¨µø.
+
 		this.mainApp = mainApp;
 		
-		//ªÁ¿Ã∆Æ µ•¿Ã≈Õ∏¶ ø¨µø«—¥Ÿ.
+
 		siteTable.setItems(mainApp.getSiteData());
 		
-		//»≠∏È»∏¿¸ ΩΩ∂Û¿Ã¥ıøÕ ≈‰±€πˆ∆∞¿ª √ ±‚»≠ «—¥Ÿ.
+
 		rotate.valueProperty().set((int)mainApp.getRotateTime());
 		rotateButton.setSelected(mainApp.isRotate());
 		
-		//»≠∏È ∏Æ«¡∑πΩÃ ≈‰±€ πˆ∆∞¿ª √ ±‚»≠ «—¥Ÿ.
 		refreshingButton.setSelected(mainApp.isRefresh());
 		
 		addSiteDataToListener(mainApp.getSiteData());
 	}
 	
-	/**
-	 * ªÁ¿Ã∆Æµ•¿Ã≈Õ √ﬂ∞°/ªË¡¶ ∞®¡ˆ ∏ÆΩ∫≥ 
-	 * @param siteData
-	 */
+
 	private void addSiteDataToListener(ObservableList<Site> siteData)
 	{
 		siteData.addListener((ListChangeListener.Change<? extends Site> change) -> {

@@ -2,6 +2,7 @@ package mil.navy.monitoring;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.prefs.Preferences;
@@ -11,6 +12,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import com.sun.javafx.scene.traversal.TopMostTraversalEngine;
+import com.sun.media.jfxmedia.events.NewFrameEvent;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -26,7 +28,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -40,7 +44,7 @@ import mil.navy.monitoring.view.SettingsLayoutController;
 
 public class MainApp extends Application {
 
-	private String titleString = "À¥ ÅëÇÕ ¸ğ´ÏÅÍ¸µ Åø";
+	private String titleString = "ì •ë³´ë³´í˜¸ í†µí•© ëª¨ë‹ˆí„°ë§ ë„êµ¬";
 	
 	private ObservableList<Site> siteData = FXCollections.observableArrayList();
 	private ObservableList<BrowserLayoutController> controllers = FXCollections.observableArrayList();
@@ -65,11 +69,6 @@ public class MainApp extends Application {
 	
 	LongProperty startTime = new SimpleLongProperty(0);
 	
-	/**
-	 * ¸ŞÀÎ µ¥ÀÌÅÍÀÇ Á¢±ÙÀ» ¼³Á¤ÇÑ´Ù.
-	 * °¢ ºê¶ó¿ìÀú¿¡¼­ Àü¿ªÀ¸·Î Á¢±ÙÇÏ±â ¶§¹®¿¡ synchronized¸¦ ¼³Á¤À» ÇÏ¿© Ãæµ¹À» ¹æÁö ÇÑ´Ù.
-	 * @return
-	 */
 	public synchronized boolean isRefresh()
 	{
 		return isRefreshing;
@@ -99,17 +98,8 @@ public class MainApp extends Application {
 		rotateTime = set;
 	}
 	
-	/**
-	 * MainAppÀÇ ÃÊ±â¼³Á¤
-	 */
 	public MainApp() {
 		
-		
-		//siteData.add(new Site("Naver", "http://naver.com/", true));
-		/*siteData.add(new Site("Google", "http://google.com/"));
-		siteData.add(new Site("Bing", "http://bing.com/"));
-		siteData.add(new Site("´ëÇÑ¹Î±¹ ÇØ±º", "http://navy.mil.kr/"));*/
-		// ¸¶Áö¸·À¸·Î ¿­¾ú´ø ¿¬¶ôÃ³ ÆÄÀÏÀ» °¡Á®¿Â´Ù.
 
 		try
 		{
@@ -178,9 +168,7 @@ public class MainApp extends Application {
 
 	}
 	
-	/**
-	 * È­¸é»ó ·çÆ® ¸Ş´º¹Ù¸¦ ·Îµå ÇÏ¸é¼­ ¸¶Áö¸·¿¡ Stage¸¦ º¸¿©ÁØ´Ù.
-	 */
+
 	private void initRootLayout()
 	{
 		try
@@ -196,8 +184,7 @@ public class MainApp extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			
-			
-			//È­¸é È¸Àü µ¿ÀÛÀ» Á¦¾îÇÏ´Â ¾²·¹µå, ÇÁ·Î±×·¥ µ¿ÀÛ°ú ÇÔ²² ½ÃÀÛÇÑ´Ù.
+
 			new Timer().scheduleAtFixedRate(new TimerTask() {
 		        @Override
 		        public void run() {
@@ -214,14 +201,12 @@ public class MainApp extends Application {
 		}
 		
 	}
+
 	
-	/**
-	 * È­¸é È¸Àü ½Ãµµ
-	 */
 	private void tryRotate()
 	{
 		
-		//´ÙÀ½·Îµù±îÁöÀÇ ³²Àº ½Ã°£ ÃøÁ¤
+
 		LongProperty besideTime = new SimpleLongProperty();
 		besideTime.bind(Bindings.subtract(System.nanoTime(), startTime));
 				
@@ -230,7 +215,6 @@ public class MainApp extends Application {
 		
 		if(besideTimeLong > rotateTimeLong)
 		{
-			//ÀÓ½Ã Æú´õ ÀüºÎ »èÁ¦
 			FileUtil.deleteAllFiles("C:/Users/navy/AppData/Local/Temp");
 			startTime.set(System.nanoTime());
 			printRotateScreen();
@@ -238,9 +222,7 @@ public class MainApp extends Application {
 		
 	}
 	
-	/**
-	 * ¼³Á¤ È­¸é Ç¥½Ã
-	 */
+
 	public void showSettingDialog()
 	{
 		try
@@ -249,12 +231,59 @@ public class MainApp extends Application {
 			BorderPane layout = (BorderPane) loader.load();
 			
 			Stage dialogStage = new Stage();
-			dialogStage.setTitle("È¯°æ¼³Á¤");
+			dialogStage.setTitle("ì„¤ì •");
 			dialogStage.initModality(Modality.WINDOW_MODAL);
 			dialogStage.initOwner(primaryStage);
 			
 			SettingsLayoutController controller = loader.getController();
 			controller.setMainApp(this);
+			
+			dialogStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+				@Override
+				public void handle(WindowEvent event) {
+					
+					if(controller.isChanged)
+					{
+						Alert alert = new Alert(AlertType.INFORMATION, "ë³€ê²½ ì‚¬í•­ í™•ì¸", ButtonType.NO, ButtonType.OK );
+						
+						alert.setTitle("ë³€ê²½ ì‚¬í•­ì´ ìˆìŠµë‹ˆë‹¤");
+						alert.setHeaderText("ë³€ê²½ ëœ ì‚¬í•­ì´ ìˆìŠµë‹ˆë‹¤. ì €ì¥í•˜ì‹œê² ìŠµë‹ˆê¹Œ?");
+						alert.setContentText(null);
+						
+						Optional<ButtonType> select = alert.showAndWait();
+						
+						if(select.get() == ButtonType.OK)
+						{
+							File personFile = getSiteFilePath();
+					        if (personFile != null) {
+					            saveSiteDataToFile(personFile);
+					        } else {
+					        	FileChooser fileChooser = new FileChooser();
+
+					            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
+					                    "XML files (*.xml)", "*.xml");
+					            fileChooser.getExtensionFilters().add(extFilter);
+
+					            File file = fileChooser.showSaveDialog(getPrimaryStage());
+
+					            if (file != null) {
+					                if (!file.getPath().endsWith(".xml")) {
+					                    file = new File(file.getPath() + ".xml");
+					                }
+					                saveSiteDataToFile(file);
+					            }
+					        }
+						}
+						else
+						{
+							
+						}
+						
+						
+					}
+					
+				}
+			});
 			
 			Scene scene = new Scene(layout);
 			dialogStage.setScene(scene);
@@ -267,11 +296,7 @@ public class MainApp extends Application {
 		}
 	}
 	
-	
-	/**
-	 * Overview ÄÁÆ®·Ñ·¯¿¡¼­ ºê¶ó¿ìÀú Ãß°¡ Áö½Ã¸¦ ¼öÇàÇÑ´Ù.
-	 * SiteData¸¦ ¹ÙÅÁÀ¸·Î overview¿¡ ºê¶ó¿ìÀú¸¦ ±×¸°´Ù.
-	 */
+
 	public void addBrowserToOverview()
 	{
 		
@@ -280,7 +305,7 @@ public class MainApp extends Application {
 			rootController.getOverView().getChildren().removeAll(browsers);
 			rootController.getOverView().getChildren().clear();
 			
-			//°¢ ÄÁÆ®·Ñ·¯ÀÇ Å¸ÀÌ¸Ó Á¾·á.
+
 			for(int i=0; i<controllers.size(); i++)
 				controllers.get(i).shutdownThis();
 			
@@ -290,7 +315,6 @@ public class MainApp extends Application {
 			controllers = FXCollections.observableArrayList();
 			browsers = FXCollections.observableArrayList();
 			
-			//Ãß°¡µÈ ºê¶ó¿ìÀúÀÇ column, row¸¦ ±¸ÇÑ´Ù.
 			BrowserColumn = 1;
 			BrowserRow = 1;
 			for(int i=0; i<=siteData.size(); i++)
@@ -304,18 +328,18 @@ public class MainApp extends Application {
 					BrowserColumn++;
 			}
 			
-			//ºê¶ó¿ìÀú °¹¼ö°¡ È¦ ¼ö ÀÏ¶§ÀÇ ¹èÄ¡
+
 			if(siteData.size() % 2 != 0)
 				BrowserColumn++;
 			
-			//ºê¶ó¿ìÀú °¹¼ö°¡ 1°³ ÀÏ¶§ÀÇ ¹èÄ¡
+
 			if(siteData.size() == 1)
 			{
 				BrowserColumn = 1;
 				BrowserRow = 1;
 			}
-				
-			//ºê¶ó¿ìÀú °¹¼ö°¡ 2°³ÀÏ ¶§ÀÇ Vertical ¹èÄ¡¸¦ Horizontal ¹èÄ¡·Î º¯°æ
+
+			
 			if(siteData.size() == 2)
 			{
 				BrowserColumn = 2;
@@ -338,7 +362,7 @@ public class MainApp extends Application {
 				browser.setPrefWidth((rootLayout.widthProperty().get() / BrowserColumn) - 10);
 				
 				
-				//°¢ ºê¶ó¿ìÀúÀÇ Height ¸®½º³Ê µî·Ï
+
 				rootLayout.heightProperty().addListener(new ChangeListener<Number>() {
 					@Override
 					public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -348,7 +372,6 @@ public class MainApp extends Application {
 					}
 				});
 				
-				//°¢ ºê¶ó¿ìÀúÀÇ Width ¸®½º³Ê µî·Ï
 				rootLayout.widthProperty().addListener(new ChangeListener<Number>() {
 					@Override
 					public void changed(ObservableValue<? extends Number> observable, Number oldValue,Number newValue) {
@@ -399,7 +422,7 @@ public class MainApp extends Application {
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("view/VoidLayout.fxml"));
 				BorderPane browser = (BorderPane) loader.load();
 				rootController.getOverView().getChildren().add(browser);
-				//°¢ ºê¶ó¿ìÀúÀÇ Height ¸®½º³Ê µî·Ï
+
 				rootLayout.heightProperty().addListener(new ChangeListener<Number>() {
 					@Override
 					public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -409,7 +432,7 @@ public class MainApp extends Application {
 					}
 				});
 				
-				//°¢ ºê¶ó¿ìÀúÀÇ Width ¸®½º³Ê µî·Ï
+
 				rootLayout.widthProperty().addListener(new ChangeListener<Number>() {
 					@Override
 					public void changed(ObservableValue<? extends Number> observable, Number oldValue,Number newValue) {
@@ -427,10 +450,7 @@ public class MainApp extends Application {
 		}
 		
 	}
-	
-	/**
-	 * ÇöÀç Ãâ·ÂµÉ È­¸é ¹è¿­À» ¹ÙÅÁÀ¸·Î BrowserLayoutÀ» »Ñ·ÁÁØ´Ù.
-	 */
+
 	private void printRotateScreen()
 	{
 		try
@@ -478,13 +498,7 @@ public class MainApp extends Application {
 	}
 	
 	
-	/**
-	 * »çÀÌÆ® ÆÄÀÏ È¯°æ¼³Á¤À» ¹İÈ¯ÇÑ´Ù.
-	 * Áï ÆÄÀÏÀº ¸¶Áö¸·À¸·Î ¿­¸° °ÍÀÌ°í, È¯°æ¼³Á¤Àº OS Æ¯Á¤ ·¹Áö½ºÆ®¸®·ÎºÎÅÍ ÀĞ´Â´Ù.
-	 * ¸¸ÀÏ preference¸¦ Ã£Áö ¸øÇÏ¸é nullÀ» ¹İÈ¯ÇÑ´Ù.
-	 *
-	 * @return
-	 */
+
 	public File getSiteFilePath() {
 	    Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
 	    String filePath = prefs.get("filePath", null);
@@ -495,46 +509,37 @@ public class MainApp extends Application {
 	    }
 	}
 	
-	/**
-	 * ÇöÀç ºÒ·¯¿Â ÆÄÀÏÀÇ °æ·Î¸¦ ¼³Á¤ÇÑ´Ù. ÀÌ °æ·Î´Â OS Æ¯Á¤ ·¹Áö½ºÆ®¸®¿¡ ÀúÀåµÈ´Ù.
-	 *
-	 * @param file the file or null to remove the path
-	 */
+
 	public void setSiteFilePath(File file) {
 	    Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
 	    if (file != null) {
 	        prefs.put("filePath", file.getPath());
 
-	        // Stage Å¸ÀÌÆ²À» ¾÷µ¥ÀÌÆ®ÇÑ´Ù.
+
 	        primaryStage.setTitle(titleString + " - " + file.getName());
 	    } else {
 	        prefs.remove("filePath");
 
-	        // Stage Å¸ÀÌÆ²À» ¾÷µ¥ÀÌÆ®ÇÑ´Ù.
+
 	        primaryStage.setTitle("AddressApp");
 	    }
 	}
-	
-	/**
-	 * ÁöÁ¤ÇÑ ÆÄÀÏ·ÎºÎÅÍ »çÀÌÆ® µ¥ÀÌÅÍ¸¦ °¡Á®¿Â´Ù. ÇöÀç »çÀÌÆ® µ¥ÀÌÅÍ·Î ´ëÃ¼µÈ´Ù.
-	 *
-	 * @param file
-	 */
+
 	public void loadSiteDataFromFile(File file) {
 	    try {
 	        JAXBContext context = JAXBContext.newInstance(SiteListWrapper.class);
 	        Unmarshaller um = context.createUnmarshaller();
 
-	        // ÆÄÀÏ·ÎºÎÅÍ XMLÀ» ÀĞÀº ´ÙÀ½ ¿ª ¸¶¼£¸µÇÑ´Ù.
+
 	        SiteListWrapper wrapper = (SiteListWrapper) um.unmarshal(file);
 
 	        siteData.clear();
 	        siteData.addAll(wrapper.getSites());
 
-	        // ÆÄÀÏ °æ·Î¸¦ ·¹Áö½ºÆ®¸®¿¡ ÀúÀåÇÑ´Ù.
+
 	        setSiteFilePath(file);
 
-	    } catch (Exception e) { // ¿¹¿Ü¸¦ Àâ´Â´Ù
+	    } catch (Exception e) { 
 	    	e.printStackTrace();
 	    	
 	        Alert alert = new Alert(AlertType.ERROR);
@@ -546,11 +551,7 @@ public class MainApp extends Application {
 	    }
 	}
 	
-	/**
-	 * ÇöÀç »çÀÌÆ® µ¥ÀÌÅÍ¸¦ ÁöÁ¤ÇÑ ÆÄÀÏ¿¡ ÀúÀåÇÑ´Ù.
-	 *
-	 * @param file
-	 */
+
 	public void saveSiteDataToFile(File file) {
 	    try {
 	        JAXBContext context = JAXBContext
@@ -558,16 +559,13 @@ public class MainApp extends Application {
 	        Marshaller m = context.createMarshaller();
 	        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-	        // ¿¬¶ôÃ³ µ¥ÀÌÅÍ¸¦ °¨½Ñ´Ù.
 	        SiteListWrapper wrapper = new SiteListWrapper();
 	        wrapper.setSites(siteData);
 
-	        // ¸¶¼£¸µ ÈÄ XMLÀ» ÆÄÀÏ¿¡ ÀúÀåÇÑ´Ù.
 	        m.marshal(wrapper, file);
 
-	        // ÆÄÀÏ °æ·Î¸¦ ·¹Áö½ºÆ®¸®¿¡ ÀúÀåÇÑ´Ù.
 	        setSiteFilePath(file);
-	    } catch (Exception e) { // ¿¹¿Ü¸¦ Àâ´Â´Ù.
+	    } catch (Exception e) {
 	        Alert alert = new Alert(AlertType.ERROR);
 	        alert.setTitle("Error");
 	        alert.setHeaderText("Could not save data");
@@ -577,28 +575,19 @@ public class MainApp extends Application {
 	    }
 	}
 	
-	/**
-	 * »çÀÌÆ®µ¥ÀÌÅÍ¸¦ ¹İÈ¯ÇÑ´Ù. 
-	 */
+
 	public ObservableList<Site> getSiteData()
 	{
 		return siteData;
 	}
 	
-	/**
-	 * ÇöÀç ÁöÁ¤µÈ ºê¶ó¿ìÀúµéÀÇ ÄÁÆ®·Ñ·¯µéÀ» ¹İÈ¯ÇÑ´Ù.
-	 * (ÁÖÀÇ) ºê¶ó¿ìÀúÀÇ µ¥ÀÌÅÍ¾çÀº º¯µ¿ÀûÀÓ.
-	 * @return
-	 */
+
 	public ObservableList<BrowserLayoutController> getBrowserControllers()
 	{
 		return controllers;
 	}
 	
-	/**
-	 * primaryStage¸¦ ¹İÈ¯ÇÑ´Ù.
-	 * @return
-	 */
+
 	public Stage getPrimaryStage()
 	{
 		return primaryStage;

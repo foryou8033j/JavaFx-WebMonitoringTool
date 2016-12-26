@@ -7,7 +7,7 @@ public class FileUtil {
 	public static void deleteAllFiles(String path){
 		
 		File file = new File(path);
-		//폴더내 파일을 배열로 가져온다.
+
 		File[] tempFile = file.listFiles();
 
 		if(tempFile.length >0){
@@ -20,7 +20,7 @@ public class FileUtil {
 						System.out.println(tempFile[i].getPath() + " was Deleted");
 						tempFile[i].delete();
 					}else{
-						//재귀함수
+
 						deleteAllFiles(tempFile[i].getPath());
 					}
 					tempFile[i].delete();

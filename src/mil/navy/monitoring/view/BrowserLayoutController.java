@@ -44,13 +44,6 @@ public class BrowserLayoutController{
 	private WebEngine webEngine;
 	//Document doc;
 	
-	@FXML
-	private ToggleButton pauseButton;
-	
-	//남은시간 표시 진행바
-	@FXML
-	private ProgressBar progressBar;
-	
 	private MainApp mainApp;
 	
 	//@FXML
@@ -66,34 +59,13 @@ public class BrowserLayoutController{
 
 	}
 	
-	@FXML
-	private void handlePauseButton()
-	{
-		if(pauseButton.isSelected())
-		{
-			loadURL();
-			site.setRunning(true);
-			pauseButton.setText("▶");
-			title.textFillProperty().set(Color.BLACK);
-		}
-		else
-		{
-			title.textFillProperty().set(Color.RED);
-			pauseButton.setText("■");
-			site.setRunning(false);
-		}
-	}
-	
-	/**
-	 * 설정된 시간을 바탕으로 새로고침한다.
-	 */
 	private void tryReloadPage()
 	{
 		
-		//시작, 끝 시간 조정 -> 추후 그래프에서 로딩 시간 측정용
+
 		elapsedTime.bind(Bindings.subtract(endTime, startTime));
 		
-		//다음로딩까지의 남은 시간 측정
+
 		LongProperty besideTime = new SimpleLongProperty();
 		besideTime.bind(Bindings.subtract(System.nanoTime(), startTime));
 		
@@ -114,18 +86,13 @@ public class BrowserLayoutController{
 	
 	private void doRefreshingPrecess()
 	{
-		progressBar.progressProperty().bind(webEngine.getLoadWorker().progressProperty());
 		tryReloadPage();
-    	pauseButton.setSelected(true);
     	title.textFillProperty().set(Color.BLACK);
 	}
 	
 	private void pauseRefresingProcess()
 	{
-		progressBar.progressProperty().unbind();
-		progressBar.setProgress(-1);
     	title.textFillProperty().set(Color.RED);
-    	pauseButton.setSelected(false);
 	}
 	
 	@FXML
@@ -149,7 +116,6 @@ public class BrowserLayoutController{
 		{
 			//progressBar.setStyle("-fx-accent: #A9A9A9;");
 			pauseTime.set(System.nanoTime());
-			progressBar.setProgress(-1);
 			return;
 		}
 		else 
@@ -162,13 +128,9 @@ public class BrowserLayoutController{
 		long refreshTimeLong = (long) site.getRefreshTime() * 1000;
 		
 		double fullPercent =  ((double)besideTimeLong / (double)refreshTimeLong) * 100;
-		
-		progressBar.setProgress(fullPercent/100);
 	}
 	
-	/**
-	 * 설정된 URL주소를 로드한다.
-	 */
+
 	public void loadURL()
 	{
 		try
@@ -183,20 +145,15 @@ public class BrowserLayoutController{
 		
 	}
 	
-	/**
-	 * MainApp과 연동한다.
-	 * @param mainApp
-	 */
+
 	public void setMainApp(MainApp mainApp)
 	{
 		this.mainApp = mainApp;
 		
 	}
 	
-	/**
-	 * 지정된 Site와 연동한다.
-	 * @param site
-	 */
+
+
 	public void setSiteData(Site site)
 	{
 		this.site = site;
@@ -205,37 +162,17 @@ public class BrowserLayoutController{
 		{
 			startTime.set(System.nanoTime());
 			
-			//사이트 타이틀 설정
+
 			title.setText(site.getName());
 			
-			//웹엔진 연동
 			webEngine = browser.getEngine();
 			
-			//org.eclipse.swt.browser.DefaultType=mozilla
-			
-			/*doc = Jsoup.parse(new URL(site.getAddress()), 5000);
-		    doc.select("img").stream().forEach((element) -> {
-	            element.remove();
-	        });
-		    webEngine.loadContent(doc.outerHtml());*/
-			
-			//URL url = new URL(site.getAddress());
-			//webview.getEngine().load(url.toExternalForm());
-			//browser.getEngine().load(url.toExternalForm());
 			webEngine.load(site.getAddress());
-			
-			//쿠키 설정
-			//java.net.CookieHandler.setDefault(null);
-			//java.net.CookieHandler.setDefault(manager);
-			
-			
-			//Desktop.getDesktop().browse(new URI("http://www.example.com"));
-			//java.net.CookieHandler.setDefault(null);
+
 			java.net.CookieHandler.setDefault(new java.net.CookieManager());
-			//browser.setCache(false);
 			
 			
-			//브라우저 배율 기본 설정
+			//占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占썩본 占쏙옙占쏙옙
 			browser.zoomProperty().set((double) site.getZoom() );
 			browser.getChildrenUnmodifiable().addListener(new ListChangeListener<Node>() {
 			      @Override public void onChanged(Change<? extends Node> change) {
@@ -249,42 +186,9 @@ public class BrowserLayoutController{
 			webEngine.javaScriptEnabledProperty().set(true);
 			
 
-			//Progress 설정
-			/*webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
-				
-		        @Override
-		        public void changed(ObservableValue<? extends State> observable, State oldValue, State newValue) {
-		        	
-		            if (newValue == Worker.State.SUCCEEDED) {
-		            	endTime.set(System.nanoTime());
-		            	progressBar.setStyle("-fx-accent: #00BFFF;");
-		            }
-		            else if(newValue == Worker.State.RUNNING)
-		            {
-		            	progressBar.setStyle("-fx-accent: #FA6900;");
-		            }
-		            else if(newValue == Worker.State.FAILED)
-		            {
-		            	progressBar.setStyle("-fx-accent: RED;");
-		            }
-		        }
-		    });*/
-			
 			webEngine.setCreatePopupHandler(null);
 			
-			
-			//browser.setStyle("window.scrollTo(0, document.body.scrollWidth / 2)");
 
-			//남은시간 프로그래스 바 지정
-			//progressBar.progressProperty().bind(webEngine.getLoadWorker().progressProperty());
-
-			//남은 로딩율 프로그래스 지정
-			progressBar.progressProperty().bind(webEngine.getLoadWorker().progressProperty());
-
-		    //최초 브라우저 삽입시에 로드.
-		    //if(site.isRunning()) loadURL();
-			
-			// Create a trust manager that does not validate certificate chains
 			TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
 				public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 					return null;
@@ -297,7 +201,6 @@ public class BrowserLayoutController{
 				}
 			} };
 
-			// Install the all-trusting trust manager
 			try {
 				SSLContext sc = SSLContext.getInstance("SSL");
 				sc.init(null, trustAllCerts, new java.security.SecureRandom());
@@ -324,15 +227,7 @@ public class BrowserLayoutController{
 		            });
 		        }
 		    }, 0, 1000);
-/*			
-			new Timer().scheduleAtFixedRate(new TimerTask() {
-		        @Override
-		        public void run() {
-		            Platform.runLater(() -> {
-		            	drawTimeProgressBar();
-		            });
-		        }
-		    }, 0, 100);*/
+
 			
 		}catch (Exception e)
 		{

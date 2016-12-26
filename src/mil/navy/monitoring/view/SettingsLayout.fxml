@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane minHeight="400.0" minWidth="700.0" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mil.navy.monitoring.view.SettingsLayoutController">
+<BorderPane minHeight="400.0" minWidth="700.0" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mil.navy.monitoring.view.SettingsLayoutController">
    <center>
       <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
@@ -89,8 +89,14 @@
                         <Slider fx:id="rotate" blockIncrement="1.0" majorTickUnit="10.0" max="300.0" minorTickCount="1" showTickMarks="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                      </children>
                   </GridPane>
-                  <Button fx:id="upButton" layoutX="1.0" layoutY="143.0" mnemonicParsing="false" onAction="#handleUpChange" text="▲" />
-                  <Button fx:id="downButton" layoutX="1.0" layoutY="168.0" mnemonicParsing="false" onAction="#handleDownChange" text="▼" />
+                  <Button fx:id="upButton" layoutX="1.0" layoutY="143.0" mnemonicParsing="false" onAction="#handleUpChange" text="▲">
+                     <font>
+                        <Font name="Malgun Gothic" size="12.0" />
+                     </font></Button>
+                  <Button fx:id="downButton" layoutX="1.0" layoutY="168.0" mnemonicParsing="false" onAction="#handleDownChange" text="▼">
+                     <font>
+                        <Font name="Malgun Gothic" size="12.0" />
+                     </font></Button>
                </children>
             </AnchorPane>
         </items>

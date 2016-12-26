@@ -11,7 +11,6 @@ public class Site
 	private final StringProperty refreshTime;
 	private final StringProperty running;
 	private final StringProperty zoom;
-	//refreshTime, running, zoom 은 IntegerProperty로 변경할 필요성이 있음.
 	
 	
 	public Site() {
@@ -25,8 +24,8 @@ public class Site
 		
 		this.name = new SimpleStringProperty(name);
 		this.address = new SimpleStringProperty(address);
-		zoom = new SimpleStringProperty("1");
-		refreshTime = new SimpleStringProperty("5");
+		zoom = new SimpleStringProperty("0.5");
+		refreshTime = new SimpleStringProperty("30");
 	}
 	
 	public String getName()

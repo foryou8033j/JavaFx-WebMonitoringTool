@@ -29,9 +29,6 @@ public class RootLayoutController {
 		
 	}
 	
-	/**
-     * ��� �ִ� �ּҷ��� �����.
-     */
     @FXML
     private void handleNew() {
         mainApp.getSiteData().clear();
@@ -39,9 +36,6 @@ public class RootLayoutController {
         mainApp.addBrowserToOverview();
     }
 	
-    /**
-     * FileChooser�� ��� ����ڰ� ������ �ּҷ��� �����ϰ� �Ѵ�.
-     */
     @FXML
     private void handleOpen() {
         FileChooser fileChooser = new FileChooser();

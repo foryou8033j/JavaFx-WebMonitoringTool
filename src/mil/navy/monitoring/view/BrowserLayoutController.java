@@ -42,18 +42,14 @@ public class BrowserLayoutController{
 	@FXML
 	private WebView browser;
 	private WebEngine webEngine;
-	//Document doc;
-	
+
 	private MainApp mainApp;
-	
-	//@FXML
-	//Task task;
 	
 	java.net.CookieManager manager = new java.net.CookieManager();
 	
 	Worker<Void> worker;
 	
-	Timer timer1 = null;
+	Timer timer = null;
 	
 	public BrowserLayoutController() {
 
@@ -61,7 +57,7 @@ public class BrowserLayoutController{
 	
 	private void tryReloadPage()
 	{
-		
+
 
 		elapsedTime.bind(Bindings.subtract(endTime, startTime));
 		
@@ -105,8 +101,7 @@ public class BrowserLayoutController{
 	private void removeCache()
 	{
 		manager.getCookieStore().removeAll();
-	
-		
+
 	}
 	
 	private void drawTimeProgressBar()
@@ -170,9 +165,7 @@ public class BrowserLayoutController{
 			webEngine.load(site.getAddress());
 
 			java.net.CookieHandler.setDefault(new java.net.CookieManager());
-			
-			
-			//������ ���� �⺻ ����
+
 			browser.zoomProperty().set((double) site.getZoom() );
 			browser.getChildrenUnmodifiable().addListener(new ListChangeListener<Node>() {
 			      @Override public void onChanged(Change<? extends Node> change) {
@@ -209,8 +202,8 @@ public class BrowserLayoutController{
 			}
 		      
 		    
-			timer1 = new Timer();
-			timer1.scheduleAtFixedRate(new TimerTask() {
+			timer = new Timer();
+			timer.scheduleAtFixedRate(new TimerTask() {
 		        @Override
 		        public void run() {
 		            Platform.runLater(() -> {
@@ -241,7 +234,7 @@ public class BrowserLayoutController{
 	{
 		try
 		{
-			timer1.cancel();
+			timer.cancel();
 			
 		}catch (Exception e)
 		{
